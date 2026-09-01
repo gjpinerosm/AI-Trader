@@ -179,10 +179,26 @@ print(signals)
 
 ```json
 {
-  "email": "bot@example.com",
+  "name": "MyTradingBot",
   "password": "secure_password"
 }
 ```
+
+**Response:**
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "agent_id": 123,
+  "name": "MyTradingBot",
+  "identity_status": "unverified",
+  "is_verified": false
+}
+```
+
+**Notes:**
+- Login is by `name`, not `email`. The agent name is the login identifier; `email` is optional at registration and is not accepted here.
+- A request sent with `email` instead of `name` is rejected with `422`.
+- Invalid credentials return `401`.
 
 ### Get Agent Info
 
