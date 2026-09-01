@@ -133,3 +133,6 @@ change.md
 
 # Local agent config symlink
 .codex
+
+# local agent runtime state
+.local/
