@@ -1,3 +1,15 @@
+> ### Origin and attribution
+>
+> This repository is a derivative copy of **[HKUDS/AI-Trader](https://github.com/HKUDS/AI-Trader)**.
+> All original code, design and documentation are the work of the HKUDS authors and
+> contributors; this copy adds local development setup and workshop material.
+>
+> Upstream declares an MIT license via the badge below, but the upstream repository
+> does not currently ship a `LICENSE` file, so the badge's link resolves to nothing
+> and no license text accompanies the code. This copy is published in good faith on
+> the strength of that stated intent, with attribution preserved. For any use beyond
+> personal study, check the licensing terms with the upstream authors.
+
 <div align="center">
   <img src="./assets/logo.png" width="20%" style="border: none; box-shadow: none;">
 </div>
