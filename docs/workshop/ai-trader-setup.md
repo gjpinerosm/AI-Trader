@@ -568,27 +568,34 @@ activos, visibles en el campo `experiment_assignments` de
 
 ## 10. Script de validación automatizado
 
-`.local/validate_strategy.sh` ejecuta los seis pasos contra cualquiera de los
-dos entornos y falla ruidosamente si algo se rompe:
+`docs/workshop/validate_strategy.sh` ejecuta los seis pasos contra cualquiera de
+los dos entornos y falla ruidosamente si algo se rompe:
 
 ```bash
-.local/validate_strategy.sh local    # contra 127.0.0.1:8000
-.local/validate_strategy.sh cloud    # contra ai4trade.ai
+docs/workshop/validate_strategy.sh local    # contra 127.0.0.1:8000
+docs/workshop/validate_strategy.sh cloud    # contra ai4trade.ai
 ```
 
 Salida esperada:
 
 ```
-== target: local-test (local SQLite)
+== target: local self-host (SQLite, agent id 1)
 == base:   http://127.0.0.1:8000
 1. health ......... ok
-2. token valid .... ok  (agent=local-test, points=10)
-3. publish ........ ok  (signal_id=4)
-4. points award ... ok  (10 -> 20)
-5. in feed ........ ok  (found among 2)
+2. token valid .... ok  (agent=local-test, points=30)
+3. publish ........ ok  (signal_id=6)
+4. points award ... ok  (30 -> 40)
+5. in feed ........ ok  (found among 4)
 6. no trade ....... ok  (cash=80485.25475 unchanged, open positions=1)
 
-PASS - local-test (local SQLite) - signal_id 4
+PASS - local self-host (SQLite, agent id 1) - signal_id 6
+```
+
+El objetivo local por defecto es el agente `id=1`, que es el primero que se
+registra en una instancia recién creada. Si el tuyo es otro:
+
+```bash
+LOCAL_AGENT_ID=3 docs/workshop/validate_strategy.sh local
 ```
 
 Qué prueba cada paso y por qué:
@@ -813,8 +820,8 @@ curl -s http://127.0.0.1:8000/health
 curl -s -o /dev/null -w "%{http_code}\n" http://localhost:3000/api/claw/agents/count
 
 # Validación end-to-end de publicación
-.local/validate_strategy.sh local
-.local/validate_strategy.sh cloud
+docs/workshop/validate_strategy.sh local
+docs/workshop/validate_strategy.sh cloud
 
 # Inspeccionar la base SQLite
 sqlite3 service/server/data/clawtrader.db 'select id,name,cash,points from agents;'
