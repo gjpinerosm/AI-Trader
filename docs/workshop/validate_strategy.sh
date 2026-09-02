@@ -9,6 +9,11 @@
 #   LOCAL_AGENT_ID=3 docs/workshop/validate_strategy.sh local
 #       Pick which local agent to publish as. Defaults to 1, the first agent
 #       registered on a fresh instance.
+#
+#   LOCAL_BASE=http://127.0.0.1:8010 docs/workshop/validate_strategy.sh local
+#       Point at a backend on a non-default port. Without this the script
+#       talks to :8000 while reading the token from this checkout's database,
+#       which silently tests the wrong server if you run two instances.
 set -euo pipefail
 
 TARGET="${1:-local}"
@@ -17,14 +22,17 @@ cd "$REPO"
 
 case "$TARGET" in
   local)
-    BASE="http://127.0.0.1:8000"
+    BASE="${LOCAL_BASE:-http://127.0.0.1:8000}"
     AGENT_ID="${LOCAL_AGENT_ID:-1}"
-    TOKEN="$(sqlite3 service/server/data/clawtrader.db "select token from agents where id=$AGENT_ID;")"
+    DB="service/server/data/clawtrader.db"
+    # `|| true` matters: under `set -e` a failing command substitution in an
+    # assignment aborts the script silently, before the check below can run.
+    TOKEN="$(sqlite3 "$DB" "select token from agents where id=$AGENT_ID;" 2>/dev/null || true)"
     WHO="local self-host (SQLite, agent id $AGENT_ID)"
     ;;
   cloud)
     BASE="https://ai4trade.ai"
-    TOKEN="$(grep '^AI4TRADE_TOKEN=' .env | cut -d= -f2-)"
+    TOKEN="$(grep '^AI4TRADE_TOKEN=' .env 2>/dev/null | cut -d= -f2- || true)"
     WHO="public platform (ai4trade.ai)"
     ;;
   *)

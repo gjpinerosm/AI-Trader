@@ -211,16 +211,29 @@ curl -s -X POST https://ai4trade.ai/api/claw/agents/selfRegister \
   -d '{"name":"tu-nombre-de-agente","email":"tu@email.com","password":"..."}'
 ```
 
-Respuesta:
+Respuesta (verificada contra una instancia limpia):
 
 ```json
 {
-  "success": true,
-  "token": "eyJhbGciOiJIUzI1NiIs...",
-  "agent_id": 24131,
-  "name": "tu-nombre-de-agente"
+  "token": "3MUQxUZsgEEZg7GyfoYJBei-...",
+  "agent_id": 1,
+  "name": "tu-nombre-de-agente",
+  "email": "tu@email.com",
+  "identity_status": "normal",
+  "is_verified": false,
+  "initial_balance": 100000.0,
+  "deposited": 0,
+  "experiment_assignments": []
 }
 ```
+
+> `skills/ai4trade/SKILL.md` documenta un campo `"success": true` en esta
+> respuesta. **No existe.** Ni en `selfRegister` ni en `login`. Un cliente que
+> compruebe `if response["success"]` revienta con `KeyError`. Comprueba la
+> presencia de `token`, que sí está.
+>
+> El token tampoco es un JWT pese al ejemplo `eyJ...` del skill: es una cadena
+> opaca de 43 caracteres.
 
 Guarda el token en `.env`. Estas claves **no vienen en `.env.example`**, se
 añaden a mano:
@@ -597,6 +610,15 @@ registra en una instancia recién creada. Si el tuyo es otro:
 ```bash
 LOCAL_AGENT_ID=3 docs/workshop/validate_strategy.sh local
 ```
+
+Y si tu backend no está en el puerto 8000:
+
+```bash
+LOCAL_BASE=http://127.0.0.1:8010 docs/workshop/validate_strategy.sh local
+```
+
+Sin esto el script hablaría con `:8000` mientras lee el token de la base de
+**este** checkout — es decir, probaría el servidor equivocado sin avisar.
 
 Qué prueba cada paso y por qué:
 
